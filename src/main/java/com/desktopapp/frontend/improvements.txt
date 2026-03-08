@@ -1,0 +1,13 @@
+
+in permission manageer , adminall permision is harcoded loop of 4,
+user class in authmanager shouold be seperate
+remove getint function
+thunderclient apis
+in permission manager, perms is used temporarly why?
+redundant:
+        if (AuthManager.getInstance().isAdmin()) return true;
+seperate class for module permisions
+apiservice: new TypeToken<List<Map<String, Object>>>() {}.getType());
+purpose of consants in dashboard
+froted folder strucure
+is polymorphism applied
