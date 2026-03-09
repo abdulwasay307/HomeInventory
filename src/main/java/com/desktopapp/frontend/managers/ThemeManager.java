@@ -1,18 +1,11 @@
 package com.desktopapp.frontend.managers;
 
 import javafx.scene.Scene;
+import java.net.URL;
 
 import java.util.prefs.Preferences;
 
-/**
- * Manages dark/light theme: persistence per user and application to the current scene.
- * <p>
- * <b>Where theme preference is stored</b>: Java {@link Preferences} (user node for this package).
- * On macOS: ~/Library/Preferences/com.apple.java.util.prefs (or similar). Keys are
- * "theme_guest" (login screen) and "theme_&lt;email&gt;" for each logged-in user, so each
- * user's choice is remembered and restored when they log in again.
- * </p>
- */
+
 public class ThemeManager {
     private static final ThemeManager INSTANCE = new ThemeManager();
     private static final String PREF_PREFIX = "theme_";
@@ -65,32 +58,29 @@ public class ThemeManager {
         this.currentScene = scene;
     }
 
-    /** Switch theme, save for current user, and re-apply to current scene. */
     public void toggle() {
         dark = !dark;
         prefs().put(PREF_PREFIX + currentUserKey, dark ? THEME_DARK : THEME_LIGHT);
         applyTo(currentScene);
     }
 
-    /** Apply current theme to the given scene (replace stylesheet). */
     public void applyTo(Scene scene) {
         if (scene == null) return;
         scene.getStylesheets().clear();
         String path = getStylesheetPath();
-        java.net.URL resource = getClass().getResource(path);
+        URL resource = getClass().getResource(path);
         if (resource != null) {
             scene.getStylesheets().add(resource.toExternalForm());
         }
     }
 
-    /** Returns the stylesheet path for the current theme (for initial load). */
     public String getStylesheetPath() {
         return dark ? "/theme-dark.css" : "/theme-light.css";
     }
 
     /** Full URL for the current theme (for dialogs that have their own scene). */
     public String getCurrentStylesheetUrl() {
-        java.net.URL r = getClass().getResource(getStylesheetPath());
+        URL r = getClass().getResource(getStylesheetPath());
         return r != null ? r.toExternalForm() : null;
     }
 }
