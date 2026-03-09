@@ -9,7 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.desktopapp.frontend.managers.ThemeManager;
+
 public class UserDialog {
+
+    private static void applyTheme(DialogPane dialogPane) {
+        dialogPane.getStyleClass().add("dialog-pane-dark");
+        dialogPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                String url = ThemeManager.getInstance().getCurrentStylesheetUrl();
+                if (url != null && !newScene.getStylesheets().contains(url)) {
+                    newScene.getStylesheets().add(url);
+                }
+            }
+        });
+    }
     
     public static void showCreate(Label statusLabel, Consumer<Map<String, Object>> onSave) {
         Dialog<Map<String, Object>> dialog = new Dialog<>();
@@ -18,10 +32,11 @@ public class UserDialog {
         
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialogPane.setStyle("-fx-background-color: white;");
+        applyTheme(dialogPane);
         
         FormFields fields = createFormFields(null);
         dialogPane.setContent(fields.grid);
+        styleFormFields(fields);
         
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
@@ -44,10 +59,11 @@ public class UserDialog {
         
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialogPane.setStyle("-fx-background-color: white;");
+        applyTheme(dialogPane);
         
         FormFields fields = createFormFields(user);
         dialogPane.setContent(fields.grid);
+        styleFormFields(fields);
         
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
@@ -104,6 +120,16 @@ public class UserDialog {
         }
         
         return fields;
+    }
+
+    private static void styleFormFields(FormFields fields) {
+        fields.grid.getChildren().forEach(node -> {
+            if (node instanceof Label) {
+                node.getStyleClass().add("label-field");
+            } else if (node instanceof TextField || node instanceof PasswordField || node instanceof ComboBox) {
+                node.getStyleClass().add("field-dark");
+            }
+        });
     }
     
     private static class FormFields {

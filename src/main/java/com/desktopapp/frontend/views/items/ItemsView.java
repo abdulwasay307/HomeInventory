@@ -38,10 +38,11 @@ public class ItemsView extends VBox implements ItemController.View {
         
         setSpacing(AppConstants.SPACING);
         setPadding(new Insets(AppConstants.PADDING));
+        getStyleClass().add("root-dark");
 
         table = new TableView<>();
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setStyle("-fx-background-color: " + AppConstants.COLOR_WHITE + ";");
+        table.getStyleClass().add("table-dark");
 
         items = FXCollections.observableArrayList();
         table.setItems(items);
@@ -50,13 +51,13 @@ public class ItemsView extends VBox implements ItemController.View {
         setupActions();
 
         Button createButton = new Button("Create Item");
-        createButton.setStyle(AppConstants.BUTTON_STYLE_PRIMARY);
+        createButton.getStyleClass().add("btn-primary");
         createButton.setVisible(this.permissions.isCanCreate());
         createButton.setManaged(this.permissions.isCanCreate());
         createButton.setOnAction(e -> ItemDialog.showCreateDialog(itemData -> controller.createItem(itemData)));
 
         Button refreshButton = new Button("Refresh");
-        refreshButton.setStyle("-fx-background-color: #222; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 16; -fx-cursor: hand;");
+        refreshButton.getStyleClass().add("btn-secondary");
         refreshButton.setOnAction(e -> controller.loadItems());
 
         HBox header = new HBox(10, createButton, refreshButton);
@@ -155,9 +156,9 @@ public class ItemsView extends VBox implements ItemController.View {
                         editBtn.setManaged(permissions.isCanUpdate());
                         deleteBtn.setVisible(permissions.isCanDelete());
                         deleteBtn.setManaged(permissions.isCanDelete());
-                        useBtn.setStyle(AppConstants.BUTTON_STYLE_SUCCESS.replace("14px", "12px").replace("8 16", "6 10"));
-                        editBtn.setStyle(AppConstants.BUTTON_STYLE_PRIMARY.replace("14px", "12px").replace("8 16", "6 10"));
-                        deleteBtn.setStyle("-fx-background-color: #b00020; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 10; -fx-cursor: hand;");
+                        useBtn.getStyleClass().add("btn-success-small");
+                        editBtn.getStyleClass().add("btn-primary-small");
+                        deleteBtn.getStyleClass().add("btn-danger");
 
                         useBtn.setOnAction(e -> {
                             Item row = getTableView().getItems().get(getIndex());

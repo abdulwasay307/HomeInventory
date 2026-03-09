@@ -16,6 +16,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import com.desktopapp.frontend.managers.ThemeManager;
+
 /** Module IDs from DB: 1=Dashboard, 2=Items, 3=Users, 4=Manage Permissions */
 public class DashboardView extends VBox {
 
@@ -25,34 +27,42 @@ public class DashboardView extends VBox {
     private static final int MODULE_PERMISSIONS = 4;
 
     public DashboardView(Runnable onLogout) {
+        this(onLogout, null);
+    }
+
+    public DashboardView(Runnable onLogout, Runnable onThemeChange) {
         setSpacing(16);
         setPadding(new Insets(20));
-        setStyle("-fx-background-color: black;");
+        getStyleClass().add("root-dark");
 
         Label title = new Label("Dashboard");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title-main");
 
         String email = AuthManager.getInstance().getCurrentUser() != null
             ? AuthManager.getInstance().getCurrentUser().getEmail()
             : "Guest";
         Label subtitle = new Label("Logged in as: " + email);
-        subtitle.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14px;");
+        subtitle.getStyleClass().add("label-dim");
 
         VBox titleBox = new VBox(4, title, subtitle);
         titleBox.setAlignment(Pos.CENTER_LEFT);
 
         Label statusLabel = new Label();
-        statusLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 13px;");
+        statusLabel.getStyleClass().add("label-dim");
         statusLabel.setVisible(false);
 
+        Button themeToggle = new Button(ThemeManager.getInstance().isDark() ? "\u2600" : "\u263E");
+        themeToggle.getStyleClass().add("theme-toggle-btn");
+        themeToggle.setTooltip(new javafx.scene.control.Tooltip(ThemeManager.getInstance().isDark() ? "Switch to light" : "Switch to dark"));
+        themeToggle.setOnAction(e -> {
+            ThemeManager.getInstance().toggle();
+            themeToggle.setText(ThemeManager.getInstance().isDark() ? "\u2600" : "\u263E");
+            themeToggle.setTooltip(new javafx.scene.control.Tooltip(ThemeManager.getInstance().isDark() ? "Switch to light" : "Switch to dark"));
+            if (onThemeChange != null) onThemeChange.run();
+        });
+
         Button logoutButton = new Button("Logout");
-        logoutButton.setStyle(
-            "-fx-background-color: white; " +
-            "-fx-text-fill: black; " +
-            "-fx-font-size: 16px; " +
-            "-fx-padding: 10 30; " +
-            "-fx-cursor: hand;"
-        );
+        logoutButton.getStyleClass().add("btn-primary");
         logoutButton.setOnAction(e -> {
             PermissionsManager.getInstance().clear();
             AuthManager.getInstance().logout();
@@ -63,11 +73,12 @@ public class DashboardView extends VBox {
         header.setAlignment(Pos.CENTER_LEFT);
         HBox spacer = new HBox();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        header.getChildren().addAll(titleBox, spacer, statusLabel, logoutButton);
+        header.getChildren().addAll(titleBox, spacer, statusLabel, themeToggle, logoutButton);
 
         TabPane tabPane = new TabPane();
+        tabPane.getStyleClass().add("tab-pane-dark");
         Label loadingLabel = new Label("Loading...");
-        loadingLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 16px;");
+        loadingLabel.getStyleClass().add("label-dim");
         loadingLabel.setVisible(true);
         StackPane contentPane = new StackPane(tabPane, loadingLabel);
         StackPane.setAlignment(loadingLabel, Pos.CENTER);

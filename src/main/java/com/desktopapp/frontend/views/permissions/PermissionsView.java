@@ -38,15 +38,19 @@ public class PermissionsView extends VBox implements PermissionsController.View 
         this.controller = new PermissionsController(this);
         setSpacing(AppConstants.SPACING);
         setPadding(new Insets(AppConstants.PADDING));
-        setStyle("-fx-background-color: " + AppConstants.COLOR_WHITE + ";");
+        getStyleClass().add("root-dark");
 
         Label header = new Label("Manage Permissions");
-        header.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        header.getStyleClass().add("title-section");
+
+        Label selectUserLabel = new Label("Select User:");
+        selectUserLabel.getStyleClass().add("label-dim");
 
         users = FXCollections.observableArrayList();
         userCombo = new ComboBox<>(users);
         userCombo.setPromptText("Select User");
         userCombo.setPrefWidth(200);
+        userCombo.getStyleClass().add("combo-dark");
         userCombo.setConverter(new StringConverter<User>() {
             @Override
             public String toString(User user) {
@@ -67,6 +71,7 @@ public class PermissionsView extends VBox implements PermissionsController.View 
         });
 
         table = new TableView<>();
+        table.getStyleClass().add("table-dark");
         permissions = FXCollections.observableArrayList();
         table.setItems(permissions);
         table.setEditable(true); // Important for checkboxes
@@ -76,7 +81,7 @@ public class PermissionsView extends VBox implements PermissionsController.View 
         setupColumns();
 
         toggleAdminButton = new Button();
-        toggleAdminButton.setStyle(AppConstants.BUTTON_STYLE_PRIMARY);
+        toggleAdminButton.getStyleClass().add("btn-primary");
         updateToggleAdminButtonText();
         toggleAdminButton.setOnAction(e -> {
             User selected = userCombo.getValue();
@@ -89,7 +94,7 @@ public class PermissionsView extends VBox implements PermissionsController.View 
         });
 
         Button saveButton = new Button("Save Changes");
-        saveButton.setStyle(AppConstants.BUTTON_STYLE_PRIMARY);
+        saveButton.getStyleClass().add("btn-primary");
         saveButton.setOnAction(e -> {
              User selected = userCombo.getValue();
              if (selected != null) {
@@ -108,7 +113,7 @@ public class PermissionsView extends VBox implements PermissionsController.View 
         HBox.setHgrow(spacer, Priority.ALWAYS);
         adminRow.getChildren().addAll(spacer, toggleAdminButton);
 
-        getChildren().addAll(header, new Label("Select User:"), userCombo, adminRow, table, saveButton);
+        getChildren().addAll(header, selectUserLabel, userCombo, adminRow, table, saveButton);
 
         controller.loadUsers();
     }

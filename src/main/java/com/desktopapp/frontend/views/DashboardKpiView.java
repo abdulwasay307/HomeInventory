@@ -33,10 +33,7 @@ public class DashboardKpiView extends VBox {
     public DashboardKpiView() {
         setSpacing(24);
         setPadding(new Insets(24));
-        setStyle("-fx-background-color: #1a1a1a;");
-
-        Label header = new Label("Key metrics");
-        header.setStyle("-fx-text-fill: #e0e0e0; -fx-font-size: 20px; -fx-font-weight: bold;");
+        getStyleClass().add("screen-dark");
 
         totalUsersLabel = createKpiPlaceholder();
         totalItemsLabel = createKpiPlaceholder();
@@ -54,19 +51,19 @@ public class DashboardKpiView extends VBox {
         HBox.setHgrow(card3, Priority.ALWAYS);
 
         Button refreshBtn = new Button("Refresh");
-        refreshBtn.setStyle("-fx-background-color: #404040; -fx-text-fill: #e0e0e0; -fx-font-size: 12px; -fx-padding: 6 12; -fx-cursor: hand;");
+        refreshBtn.getStyleClass().add("btn-secondary-small");
         refreshBtn.setOnAction(e -> refreshRecentUpdates());
 
         HBox recentHeaderRow = new HBox(10);
         recentHeaderRow.setAlignment(Pos.CENTER_LEFT);
         Label recentHeader = new Label("Recent Updates");
-        recentHeader.setStyle("-fx-text-fill: #e0e0e0; -fx-font-size: 18px; -fx-font-weight: bold;");
+        recentHeader.getStyleClass().add("title-subsection");
         recentHeaderRow.getChildren().addAll(recentHeader, refreshBtn);
 
         recentUpdatesBox = new VBox(8);
         recentUpdatesBox.setPadding(new Insets(0));
 
-        getChildren().addAll(header, kpiRow, recentHeaderRow, recentUpdatesBox);
+        getChildren().addAll(kpiRow, recentHeaderRow, recentUpdatesBox);
         loadKpis();
         loadRecentUpdates();
         initNotificationWebSocket();
@@ -104,7 +101,7 @@ public class DashboardKpiView extends VBox {
 
     private static Label createKpiPlaceholder() {
         Label l = new Label("—");
-        l.setStyle("-fx-text-fill: #fff; -fx-font-size: 28px; -fx-font-weight: bold;");
+        l.getStyleClass().add("kpi-value");
         return l;
     }
 
@@ -113,16 +110,10 @@ public class DashboardKpiView extends VBox {
         card.setAlignment(Pos.CENTER_LEFT);
         card.setPadding(new Insets(20));
         card.setMinWidth(120);
-        card.setStyle(
-            "-fx-background-color: #2d2d2d; " +
-            "-fx-background-radius: 8; " +
-            "-fx-border-color: #404040; " +
-            "-fx-border-radius: 8; " +
-            "-fx-border-width: 1;"
-        );
+        card.getStyleClass().add("kpi-card");
         Label titleLabel = new Label(title);
-        titleLabel.setStyle("-fx-text-fill: #9e9e9e; -fx-font-size: 14px;");
-        valueLabel.setStyle("-fx-text-fill: #fff; -fx-font-size: 28px; -fx-font-weight: bold;");
+        titleLabel.getStyleClass().add("kpi-title");
+        valueLabel.getStyleClass().add("kpi-value");
         card.getChildren().addAll(titleLabel, valueLabel);
         return card;
     }
@@ -199,7 +190,7 @@ public class DashboardKpiView extends VBox {
                     recentUpdatesBox.getChildren().clear();
                     if (list == null || list.isEmpty()) {
                         Label empty = new Label("No recent updates.");
-                        empty.setStyle("-fx-text-fill: #9e9e9e; -fx-font-size: 14px;");
+                        empty.getStyleClass().add("label-muted");
                         recentUpdatesBox.getChildren().add(empty);
                     } else {
                         int count = Math.min(RECENT_UPDATES_LIMIT, list.size());
@@ -213,7 +204,7 @@ public class DashboardKpiView extends VBox {
                 Platform.runLater(() -> {
                     recentUpdatesBox.getChildren().clear();
                     Label err = new Label("Could not load recent updates.");
-                    err.setStyle("-fx-text-fill: #9e9e9e; -fx-font-size: 14px;");
+                    err.getStyleClass().add("label-muted");
                     recentUpdatesBox.getChildren().add(err);
                 });
             }
@@ -233,24 +224,18 @@ public class DashboardKpiView extends VBox {
 
         Label leftLabel = new Label(leftText);
         leftLabel.setMaxWidth(Double.MAX_VALUE);
-        leftLabel.setStyle("-fx-text-fill: #e0e0e0; -fx-font-size: 13px;");
+        leftLabel.getStyleClass().add("label-field");
         leftLabel.setWrapText(false);
         leftLabel.setEllipsisString("…");
 
         Label timeLabel = new Label(timeStr);
-        timeLabel.setStyle("-fx-text-fill: #9e9e9e; -fx-font-size: 12px;");
+        timeLabel.getStyleClass().add("label-muted-small");
 
         HBox card = new HBox(12, leftLabel, timeLabel);
         card.setAlignment(Pos.CENTER_LEFT);
         card.setPadding(new Insets(8, 12, 8, 12));
         HBox.setHgrow(leftLabel, Priority.ALWAYS);
-        card.setStyle(
-            "-fx-background-color: #2d2d2d; " +
-            "-fx-background-radius: 6; " +
-            "-fx-border-color: #404040; " +
-            "-fx-border-radius: 6; " +
-            "-fx-border-width: 1;"
-        );
+        card.getStyleClass().add("update-card");
         return card;
     }
 

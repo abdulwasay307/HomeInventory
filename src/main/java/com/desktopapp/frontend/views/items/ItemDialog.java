@@ -11,7 +11,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.desktopapp.frontend.managers.ThemeManager;
+
 public class ItemDialog {
+
+    private static void applyTheme(DialogPane dialogPane) {
+        dialogPane.getStyleClass().add("dialog-pane-dark");
+        dialogPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                String url = ThemeManager.getInstance().getCurrentStylesheetUrl();
+                if (url != null && !newScene.getStylesheets().contains(url)) {
+                    newScene.getStylesheets().add(url);
+                }
+            }
+        });
+    }
 
     /** Use/consume an item - decrement quantity by amount. */
     public static void showUseDialog(Item item, java.util.function.Consumer<Integer> onUse) {
@@ -25,10 +39,15 @@ public class ItemDialog {
         spinner.setEditable(true);
         spinner.setMaxWidth(100);
 
-        VBox content = new VBox(10, new Label("Amount to use:"), spinner);
+        Label amountLabel = new Label("Amount to use:");
+        amountLabel.getStyleClass().add("label-field");
+        VBox content = new VBox(10, amountLabel, spinner);
         content.setPadding(new Insets(20));
-        dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        DialogPane pane = dialog.getDialogPane();
+        pane.setContent(content);
+        pane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        applyTheme(pane);
+        spinner.getStyleClass().add("field-dark");
         dialog.setResultConverter(btn -> btn == ButtonType.OK ? spinner.getValue() : null);
 
         dialog.showAndWait().ifPresent(amount -> {
@@ -43,10 +62,11 @@ public class ItemDialog {
         
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialogPane.setStyle("-fx-background-color: white;");
+        applyTheme(dialogPane);
         
         FormFields fields = createFormFields(null);
         dialogPane.setContent(fields.grid);
+        styleFormFields(fields);
         
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
@@ -69,10 +89,11 @@ public class ItemDialog {
         
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialogPane.setStyle("-fx-background-color: white;");
+        applyTheme(dialogPane);
         
         FormFields fields = createFormFields(item);
         dialogPane.setContent(fields.grid);
+        styleFormFields(fields);
         
         dialog.setResultConverter(buttonType -> {
             if (buttonType == ButtonType.OK) {
@@ -84,6 +105,16 @@ public class ItemDialog {
         dialog.showAndWait().ifPresent(result -> {
             if (onSave != null) {
                 onSave.accept(result);
+            }
+        });
+    }
+
+    private static void styleFormFields(FormFields fields) {
+        fields.grid.getChildren().forEach(node -> {
+            if (node instanceof Label) {
+                node.getStyleClass().add("label-field");
+            } else if (node instanceof TextField || node instanceof TextArea || node instanceof DatePicker) {
+                node.getStyleClass().add("field-dark");
             }
         });
     }

@@ -34,10 +34,11 @@ public class UsersView extends VBox implements UserController.View {
         this.controller = new UserController(this);
         setSpacing(AppConstants.SPACING);
         setPadding(new Insets(AppConstants.PADDING));
+        getStyleClass().add("root-dark");
 
         table = new TableView<>();
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setStyle("-fx-background-color: " + AppConstants.COLOR_WHITE + ";");
+        table.getStyleClass().add("table-dark");
 
         users = FXCollections.observableArrayList();
         table.setItems(users);
@@ -46,13 +47,13 @@ public class UsersView extends VBox implements UserController.View {
         setupActions();
 
         Button createButton = new Button("Create User");
-        createButton.setStyle(AppConstants.BUTTON_STYLE_PRIMARY);
+        createButton.getStyleClass().add("btn-primary");
         createButton.setVisible(this.permissions.isCanCreate());
         createButton.setManaged(this.permissions.isCanCreate());
         createButton.setOnAction(e -> UserDialog.showCreate(statusLabel, data -> controller.createUser(data)));
 
         Button refreshButton = new Button("Refresh");
-        refreshButton.setStyle("-fx-background-color: #222; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 16; -fx-cursor: hand;");
+        refreshButton.getStyleClass().add("btn-secondary");
         refreshButton.setOnAction(e -> controller.loadUsers());
 
         HBox header = new HBox(10, createButton, refreshButton);
@@ -101,8 +102,8 @@ public class UsersView extends VBox implements UserController.View {
                         editBtn.setManaged(permissions.isCanUpdate());
                         deleteBtn.setVisible(permissions.isCanDelete());
                         deleteBtn.setManaged(permissions.isCanDelete());
-                        editBtn.setStyle(AppConstants.BUTTON_STYLE_PRIMARY.replace("14px", "12px").replace("8 16", "6 10"));
-                        deleteBtn.setStyle("-fx-background-color: #b00020; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 10; -fx-cursor: hand;");
+                        editBtn.getStyleClass().add("btn-primary-small");
+                        deleteBtn.getStyleClass().add("btn-danger");
 
                         editBtn.setOnAction(e -> {
                             User user = getTableView().getItems().get(getIndex());
