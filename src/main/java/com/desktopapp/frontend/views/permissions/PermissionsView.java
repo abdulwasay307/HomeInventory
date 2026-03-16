@@ -189,10 +189,11 @@ public class PermissionsView extends VBox implements PermissionsController.View 
         Platform.runLater(() -> {
             User currentUser = AuthManager.getInstance().getCurrentUser();
             int currentId = currentUser != null ? currentUser.getId() : -1;
-            List<User> others = userList.stream()
+            List<User> nonAdminUsers = userList.stream()
                 .filter(u -> u.getId() != currentId)
+                .filter(u -> u.getRole() == null || !"admin".equalsIgnoreCase(u.getRole()))
                 .collect(Collectors.toList());
-            users.setAll(others);
+            users.setAll(nonAdminUsers);
             statusLabel.setText("Users loaded.");
             if (pendingRoleUpdatedUserId != null) {
                 User reselect = users.stream()
