@@ -16,15 +16,6 @@ public class AppConstants {
     /** WebSocket URL for real-time notifications (backend runs on port 5001). */
     public static final String WS_NOTIFICATIONS_URL = "ws://localhost:5001/notifications";
 
-    // Colors
-    public static final String COLOR_PRIMARY = "#1976d2";
-    public static final String COLOR_SUCCESS = "#2e7d32";
-    public static final String COLOR_WHITE = "white";
-    
-    // Styles
-    public static final String BUTTON_STYLE_PRIMARY = "-fx-background-color: " + COLOR_PRIMARY + "; -fx-text-fill: " + COLOR_WHITE + "; -fx-font-size: 14px; -fx-padding: 8 16; -fx-cursor: hand;";
-    public static final String BUTTON_STYLE_SUCCESS = "-fx-background-color: " + COLOR_SUCCESS + "; -fx-text-fill: " + COLOR_WHITE + "; -fx-font-size: 14px; -fx-padding: 8 16; -fx-cursor: hand;";
-
     // Inventory
     public static final int LOW_STOCK_THRESHOLD = 3;
     public static final int EXPIRY_DAYS_WARNING = 7;

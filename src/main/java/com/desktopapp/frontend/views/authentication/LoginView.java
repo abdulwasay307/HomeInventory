@@ -6,12 +6,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-public class LoginView extends VBox implements LoginController.View {
+import com.desktopapp.frontend.managers.ThemeManager;
+
+public class LoginView extends StackPane implements LoginController.View {
     private final LoginController controller;
     private TextField emailField;
     private PasswordField passwordField;
@@ -19,55 +24,60 @@ public class LoginView extends VBox implements LoginController.View {
     private Label errorLabel;
     private Runnable onLoginSuccess;
     private Runnable onNavigateToRegister;
+    private Runnable onThemeChange;
 
     public LoginView(Runnable onLoginSuccess) {
-        this.onLoginSuccess = onLoginSuccess;
-        this.controller = new LoginController(this);
-        setupUI();
+        this(onLoginSuccess, null, null);
     }
 
     public LoginView(Runnable onLoginSuccess, Runnable onNavigateToRegister) {
+        this(onLoginSuccess, onNavigateToRegister, null);
+    }
+
+    public LoginView(Runnable onLoginSuccess, Runnable onNavigateToRegister, Runnable onThemeChange) {
         this.onLoginSuccess = onLoginSuccess;
         this.onNavigateToRegister = onNavigateToRegister;
+        this.onThemeChange = onThemeChange;
         this.controller = new LoginController(this);
         setupUI();
     }
 
     private void setupUI() {
-        setAlignment(Pos.CENTER);
-        setSpacing(20);
-        setPadding(new Insets(40));
-        setStyle("-fx-background-color: #e0e0e0;");
+        getStyleClass().add("root-dark");
 
         VBox card = new VBox(20);
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(40));
         card.setMaxWidth(400);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
+        card.getStyleClass().add("card");
 
         Label title = new Label("Login");
-        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title-page");
 
         errorLabel = new Label();
         errorLabel.setWrapText(true);
-        errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 10;");
+        errorLabel.getStyleClass().add("label-error");
         errorLabel.setVisible(false);
 
         emailField = new TextField();
         emailField.setPromptText("Email");
         emailField.setPrefWidth(300);
+        emailField.getStyleClass().add("field-dark");
 
         passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         passwordField.setPrefWidth(300);
+        passwordField.getStyleClass().add("field-dark");
 
         loginButton = new Button("Sign In");
         loginButton.setPrefWidth(300);
         loginButton.setPrefHeight(40);
+        loginButton.getStyleClass().add("btn-primary-large");
         loginButton.setOnAction(e -> handleLogin());
         passwordField.setOnAction(e -> handleLogin());
 
         Hyperlink registerLink = new Hyperlink("Register");
+        registerLink.getStyleClass().add("link-muted");
         registerLink.setOnAction(e -> {
             if (onNavigateToRegister != null) {
                 onNavigateToRegister.run();
@@ -76,6 +86,21 @@ public class LoginView extends VBox implements LoginController.View {
 
         card.getChildren().addAll(title, errorLabel, emailField, passwordField, loginButton, registerLink);
         getChildren().add(card);
+
+        if (onThemeChange != null) {
+            Button themeToggle = new Button(ThemeManager.getInstance().isDark() ? "\u2600" : "\u263E");
+            themeToggle.getStyleClass().add("theme-toggle-btn");
+            themeToggle.setTooltip(new Tooltip(ThemeManager.getInstance().isDark() ? "Switch to light" : "Switch to dark"));
+            themeToggle.setOnAction(e -> {
+                ThemeManager.getInstance().toggle();
+                themeToggle.setText(ThemeManager.getInstance().isDark() ? "\u2600" : "\u263E");
+                themeToggle.setTooltip(new Tooltip(ThemeManager.getInstance().isDark() ? "Switch to light" : "Switch to dark"));
+                if (onThemeChange != null) onThemeChange.run();
+            });
+            getChildren().add(themeToggle);
+            StackPane.setAlignment(themeToggle, Pos.TOP_RIGHT);
+            StackPane.setMargin(themeToggle, new Insets(12, 16, 0, 0));
+        }
     }
 
     private void handleLogin() {

@@ -1,5 +1,7 @@
 package com.desktopapp.frontend;
 
+import com.desktopapp.frontend.managers.AuthManager;
+import com.desktopapp.frontend.managers.ThemeManager;
 import com.desktopapp.frontend.views.DashboardView;
 import com.desktopapp.frontend.views.authentication.LoginView;
 import com.desktopapp.frontend.views.authentication.RegisterView;
@@ -27,33 +29,54 @@ public class MainApplication extends Application {
         primaryStage.show();
     }
 
+    private void applyTheme() {
+        ThemeManager.getInstance().setCurrentScene(currentScene);
+        ThemeManager.getInstance().applyTo(currentScene);
+    }
+
     private void showLogin() {
+        ThemeManager.getInstance().setCurrentUser(null);
         StackPane root = new StackPane();
+        root.getStyleClass().add("root-dark");
         LoginView loginView = new LoginView(
             () -> Platform.runLater(this::showDashboard),
-            () -> Platform.runLater(this::showRegister)
+            () -> Platform.runLater(this::showRegister),
+            this::applyTheme
         );
         root.getChildren().add(loginView);
         currentScene = new Scene(root, 1000, 700);
+        applyTheme();
         primaryStage.setScene(currentScene);
     }
 
     private void showRegister() {
+        ThemeManager.getInstance().setCurrentUser(null);
         StackPane root = new StackPane();
+        root.getStyleClass().add("root-dark");
         RegisterView registerView = new RegisterView(
             () -> Platform.runLater(this::showLogin),
-            () -> Platform.runLater(this::showLogin)
+            () -> Platform.runLater(this::showLogin),
+            this::applyTheme
         );
         root.getChildren().add(registerView);
         currentScene = new Scene(root, 1000, 700);
+        applyTheme();
         primaryStage.setScene(currentScene);
     }
 
     private void showDashboard() {
+        if (AuthManager.getInstance().getCurrentUser() != null) {
+            ThemeManager.getInstance().setCurrentUser(AuthManager.getInstance().getCurrentUser().getEmail());
+        }
         StackPane root = new StackPane();
-        DashboardView dashboardView = new DashboardView(() -> Platform.runLater(this::showLogin));
+        root.getStyleClass().add("root-dark");
+        DashboardView dashboardView = new DashboardView(
+            () -> Platform.runLater(this::showLogin),
+            this::applyTheme
+        );
         root.getChildren().add(dashboardView);
         currentScene = new Scene(root, 1000, 700);
+        applyTheme();
         primaryStage.setScene(currentScene);
     }
 

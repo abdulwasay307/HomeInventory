@@ -9,7 +9,10 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import com.desktopapp.frontend.managers.ThemeManager;
 
 public class RegisterView extends VBox implements RegisterController.View {
     private final RegisterController controller;
@@ -22,16 +25,20 @@ public class RegisterView extends VBox implements RegisterController.View {
     private Label successLabel;
     private Runnable onRegisterSuccess;
     private Runnable onNavigateToLogin;
+    private Runnable onThemeChange;
 
     public RegisterView(Runnable onRegisterSuccess) {
-        this.onRegisterSuccess = onRegisterSuccess;
-        this.controller = new RegisterController(this);
-        setupUI();
+        this(onRegisterSuccess, null, null);
     }
 
     public RegisterView(Runnable onRegisterSuccess, Runnable onNavigateToLogin) {
+        this(onRegisterSuccess, onNavigateToLogin, null);
+    }
+
+    public RegisterView(Runnable onRegisterSuccess, Runnable onNavigateToLogin, Runnable onThemeChange) {
         this.onRegisterSuccess = onRegisterSuccess;
         this.onNavigateToLogin = onNavigateToLogin;
+        this.onThemeChange = onThemeChange;
         this.controller = new RegisterController(this);
         setupUI();
     }
@@ -40,46 +47,51 @@ public class RegisterView extends VBox implements RegisterController.View {
         setAlignment(Pos.CENTER);
         setSpacing(20);
         setPadding(new Insets(40));
-        setStyle("-fx-background-color: #e0e0e0;");
+        getStyleClass().add("root-dark");
 
         VBox card = new VBox(20);
         card.setAlignment(Pos.CENTER);
         card.setPadding(new Insets(40));
         card.setMaxWidth(400);
-        card.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
+        card.getStyleClass().add("card");
 
         Label title = new Label("Register");
-        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        title.getStyleClass().add("title-page");
 
         errorLabel = new Label();
         errorLabel.setWrapText(true);
-        errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 10;");
+        errorLabel.getStyleClass().add("label-error");
         errorLabel.setVisible(false);
 
         successLabel = new Label();
         successLabel.setWrapText(true);
-        successLabel.setStyle("-fx-text-fill: green; -fx-padding: 10;");
+        successLabel.getStyleClass().add("label-success");
         successLabel.setVisible(false);
 
         firstNameField = new TextField();
         firstNameField.setPromptText("First Name");
         firstNameField.setPrefWidth(300);
+        firstNameField.getStyleClass().add("field-dark");
 
         lastNameField = new TextField();
         lastNameField.setPromptText("Last Name");
         lastNameField.setPrefWidth(300);
+        lastNameField.getStyleClass().add("field-dark");
 
         emailField = new TextField();
         emailField.setPromptText("Email");
         emailField.setPrefWidth(300);
+        emailField.getStyleClass().add("field-dark");
 
         passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         passwordField.setPrefWidth(300);
+        passwordField.getStyleClass().add("field-dark");
 
         registerButton = new Button("Create Account");
         registerButton.setPrefWidth(300);
         registerButton.setPrefHeight(40);
+        registerButton.getStyleClass().add("btn-primary-large");
         registerButton.setOnAction(e -> controller.register(
             firstNameField.getText().trim(),
             lastNameField.getText().trim(),
@@ -88,6 +100,7 @@ public class RegisterView extends VBox implements RegisterController.View {
         ));
 
         Hyperlink loginLink = new Hyperlink("Already have an account? Sign in");
+        loginLink.getStyleClass().add("link-muted");
         loginLink.setOnAction(e -> {
             if (onNavigateToLogin != null) {
                 onNavigateToLogin.run();
@@ -98,6 +111,22 @@ public class RegisterView extends VBox implements RegisterController.View {
             title, errorLabel, successLabel, firstNameField, lastNameField,
             emailField, passwordField, registerButton, loginLink
         );
+
+        if (onThemeChange != null) {
+            Button themeToggle = new Button(ThemeManager.getInstance().isDark() ? "\u2600" : "\u263E");
+            themeToggle.getStyleClass().add("theme-toggle-btn");
+            themeToggle.setTooltip(new javafx.scene.control.Tooltip(ThemeManager.getInstance().isDark() ? "Switch to light" : "Switch to dark"));
+            themeToggle.setOnAction(e -> {
+                ThemeManager.getInstance().toggle();
+                themeToggle.setText(ThemeManager.getInstance().isDark() ? "\u2600" : "\u263E");
+                themeToggle.setTooltip(new javafx.scene.control.Tooltip(ThemeManager.getInstance().isDark() ? "Switch to light" : "Switch to dark"));
+                if (onThemeChange != null) onThemeChange.run();
+            });
+            HBox themeRow = new HBox(themeToggle);
+            themeRow.setAlignment(Pos.CENTER);
+            card.getChildren().add(themeRow);
+        }
+
         getChildren().add(card);
     }
 

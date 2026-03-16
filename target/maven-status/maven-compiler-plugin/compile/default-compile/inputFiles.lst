@@ -23,6 +23,7 @@
 /Users/abdulwasay/Documents/Lantrotech-Websites/HomeInventory/src/main/java/com/desktopapp/backend/routes/PermissionRoutes.java
 /Users/abdulwasay/Documents/Lantrotech-Websites/HomeInventory/src/main/java/com/desktopapp/backend/websocket/NotificationWebSocketServer.java
 /Users/abdulwasay/Documents/Lantrotech-Websites/HomeInventory/src/main/java/com/desktopapp/frontend/controllers/PermissionsController.java
+/Users/abdulwasay/Documents/Lantrotech-Websites/HomeInventory/src/main/java/com/desktopapp/frontend/managers/ThemeManager.java
 /Users/abdulwasay/Documents/Lantrotech-Websites/HomeInventory/src/main/java/com/desktopapp/backend/controllers/ActivityLogController.java
 /Users/abdulwasay/Documents/Lantrotech-Websites/HomeInventory/src/main/java/com/desktopapp/frontend/models/User.java
 /Users/abdulwasay/Documents/Lantrotech-Websites/HomeInventory/src/main/java/com/desktopapp/frontend/views/authentication/RegisterView.java

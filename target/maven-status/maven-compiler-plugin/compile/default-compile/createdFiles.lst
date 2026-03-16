@@ -11,6 +11,7 @@ com/desktopapp/backend/models/Item.class
 com/desktopapp/frontend/controllers/RegisterController.class
 com/desktopapp/backend/routes/ActivityRoutes.class
 com/desktopapp/frontend/services/APIService$3.class
+com/desktopapp/frontend/managers/ThemeManager.class
 com/desktopapp/frontend/utils/ViewUtils.class
 com/desktopapp/frontend/views/authentication/LoginView.class
 com/desktopapp/frontend/controllers/ItemController$View.class
